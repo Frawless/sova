@@ -1,0 +1,48 @@
+name: GitHub Actions Integration
+
+on:
+  pull_request:
+    paths:
+      - '.github/**'
+      - 'pom.xml'
+      - 'Makefile'
+      - 'Makefile.maven'
+    branches:
+      - "*"
+  push:
+    branches:
+      - "main"
+    paths:
+      - '.github/**'
+      - 'pom.xml'
+      - 'Makefile'
+      - 'Makefile.maven'
+
+permissions:
+  contents: read
+  id-token: write
+  attestations: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-github-actions-integration:
+    uses: strimzi/github-actions/.github/workflows/reusable-test-integrations.yml@bb4758d4afacd9c0ff8f426395bbbece41fd142a # v4.0
+    with:
+      repo: ${{ github.repository }}
+      ref: ${{ github.sha }}
+      architecture: "amd64"
+      artifactSuffix: "sova"
+      buildContainers: false
+      # Sova is not published to Maven Central (no "central" profile), so skip the Nexus deploy test
+      modules: "none"
+      nexusCheck: "none"
+      javaVersion: "21"
+      helmChartName: "none"
+      releaseVersion: "6.6.6"
+      helmVersion: "v3.20.0"
+      helmUnitTestVersion: "v1.0.3"
+      imagesLocation: "none"
+    secrets: inherit
