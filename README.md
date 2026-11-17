@@ -124,17 +124,18 @@ See [development-docs/DEV_GUIDE.md](development-docs/DEV_GUIDE.md).
 
 Sova release archives are published with [GitHub artifact attestations](https://docs.github.com/en/actions/security-for-github-actions/using-artifact-attestations/using-artifact-attestations-to-establish-provenance-for-builds) containing [SLSA build provenance](https://slsa.dev/provenance/v1).
 The attestations are signed keylessly with [Sigstore](https://www.sigstore.dev/) using the GitHub Actions OIDC identity, so no public key is needed to verify them.
+They are created by the shared [Strimzi GitHub Actions](https://github.com/strimzi/github-actions) workflows, so the `--signer-repo strimzi/github-actions` option is required when verifying them.
 You can verify them with the [GitHub CLI](https://cli.github.com/).
 
 To verify a release archive downloaded from the GitHub release page:
 
 ```
-gh attestation verify <release-archive> --repo strimzi/sova
+gh attestation verify <release-archive> --repo strimzi/sova --signer-repo strimzi/github-actions
 ```
 
 Each GitHub release also contains the attestation bundle `release-<version>.intoto.jsonl`.
 You can use it to verify the archive without querying the GitHub Attestation API:
 
 ```
-gh attestation verify <release-archive> --bundle release-<version>.intoto.jsonl --repo strimzi/sova
+gh attestation verify <release-archive> --bundle release-<version>.intoto.jsonl --repo strimzi/sova --signer-repo strimzi/github-actions
 ```
