@@ -6,14 +6,28 @@ updates:
       interval: weekly
     open-pull-requests-limit: 5
     groups:
+      # Group Kafka into one separated PR
       kafka:
         patterns:
           - "org.apache.kafka:*"
+      # Group Prometheus into one separated PR
       prometheus:
         patterns:
+          - "io.prometheus:*"
+      # Put all other maven deps into one PR
+      maven-dependencies:
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "org.apache.kafka:*"
           - "io.prometheus:*"
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    groups:
+      # Group all actions dependency bumps into one PR
+      github-actions:
+        patterns:
+          - "*"
